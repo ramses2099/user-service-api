@@ -1,0 +1,183 @@
+-----------Docker--------------------------
+What is Docker?
+--Docker is a tool for running applications in an isolated Environment.
+--Similar to Virtual machine
+--App run in same environment
+--Just works
+--Standard for software deployment
+
+Container vs VM
+Containers are an abstraction at the app layer that packages code and dependencies together.
+Multiple containers can run on the same machine and share the OS Kernel with other containers, each running as isolated
+processes in user space.
+
+Virtual Machines
+Virtual Machiens (VMs) are an abstraction of physical hardware turning one server into many servers. The
+hypersvisor allows multiple VMS to run on a single machine. Each VM includes a full copy of an operating system,
+the application, necessary binaries and libraries- taking up tens of GBs. VMs can also be slow to boot.
+
+Benefits
+Run container in seconds instead of minutes
+Less resources results less disk space
+Uses less Memory
+Does not need full OS
+Deployment
+Testing
+
+Commad Docker
+docker --version
+
+docker ps
+
+Docker Image
+-Image is a template for creating an environment of your Choice
+-Snapshot
+-Has everything need to run your Apps
+-OS, Software, App Code
+
+Container
+-Running instance of an image
+
+nginx
+Nginx (pronounced "engine-x") is an open source reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols,
+as well as a load balancer, HTTP cache, and a web server (origin server). The nginx project started with a strong focus on high concurrency,
+high performance and low memory usage. It is licensed under the 2-clause BSD-like license and it runs on Linux, BSD variants,
+Mac OS X, Solaris, AIX, HP-UX, as well as on other *nix flavors. It also has a proof of concept port for Microsoft Windows.
+
+docker pull nginx
+
+docker run nginx:latest
+
+#list container running
+docker container ls
+
+#docker detach mode
+docker run -d nginx:latest
+
+docker ps
+
+#EXPOSING PORTS
+docker run -d -p 8080:80 nginx:latest
+
+docker stop [CONTAINER ID]
+
+#EXPOSING MULTIPLE PORTS
+docker run -d -p 8080:80 -P 3000:80 nginx:latest
+
+MANAGER CONTAINER
+docker stop [CONTAINER ID ]
+docker start [CONTAINER ID ]
+
+docker ps -a
+docker rm [CONTAINER ID]
+
+REMOVE ALL CONTAINER
+docker rm $(docker ps -aq)
+docker rm -f $(docker ps -aq)
+
+NAMMING CONTAINERS
+docker run --name container001 -d -p 8080:80 nginx:latest
+
+docker ps --format="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nPORTS\t{{.Ports}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.CreatedAt}}\nSTATUS\t{{.Status}}\n"
+
+SET FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nPORTS\t{{.Ports}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.CreatedAt}}\nSTATUS\t{{.Status}}\n"
+
+docker ps --format=%FORMAT%
+
+DOCKER VOLUMES
+Allows sharing of data. file & folders
+
+#volumen read only
+docker run --name  container001 -v %cd%:/usr/share/nginx/html:ro -d -p 8080:80 nginx:latest
+
+#volumen 
+docker run --name  container001 -v %cd%:/usr/share/nginx/html -d -p 8080:80 nginx:latest
+
+docker exec -it conatiner001 bash
+
+#SHARED VOLUMES BETWEEN CONTAINERS
+docker run --name  container002 --volumes-from container001 -d -p 8081:80 nginx:latest
+
+DOCKERFILE
+Buil owner images
+
+BUILDER IMAGES FRON DOCKER FILE
+docker build -t container001:latest .
+docker build --tag container001:latest .
+
+CACHING AND LAYERS
+npm i -S react webpack gulp grant
+
+docker image ls
+
+docker run --name  container001 -d -p 8080:80 container001:latest
+
+CREATE EXPRESS PROJECT
+$ mkdir myapp
+$ cd myapp
+$ npm init
+entry point: (index.js)
+$ npm install express --save
+
+START API
+node index.js
+
+DOCKERIGNORE
+.dockerignore
+
+ALPINE
+node:alpine
+
+TAGGING AND VERSIONING
+Tags, Versioning and Tagging
+--Allows you to control image version
+--Avoids breaking changes
+--Safe
+
+FROM node:18-alpine
+FROM node:[VERSION]-[TAGS]
+
+TAGGING IMAGES
+docker tag [IMAGE-NAME][TAG] [IMAGE-NAME][VERSION]
+
+docker build -t user-service-api:latest .
+docker tag user-service-api:latest user-service-api:1
+
+docker build -t user-service-api:latest .
+docker tag user-service-api:latest user-service-api:2
+
+docker run --name  uservice01 -d -p 3000:3000 user-service-api:1
+docker run --name  uservice02 -d -p 3001:3000 user-service-api:2
+
+DOCKER REGISTRIES
+--Highly scalable server side application that stores and
+lets you distribute Docker images.
+--Used in your CD/CI Pipeline (CI, short for Continuous Integration,CD stands for Continuous Delivery)
+A CI/CD pipeline automates your software delivery process. The pipeline builds code, 
+runs tests (CI), and safely deploys a new version of the application (CD).
+--Run you applications
+
+
+PUSHING TO REPOSITORY DOCKER HUB
+create repository in docker hub
+ramses2099/serviceapi:latest
+
+login in docker hub
+docker login
+
+docker build -t ramses2099/serviceapi:latest .
+
+docker image ls
+
+docker push ramses2099/serviceapi:latest
+
+PULL IMAGES FROM REPOSITORY DOCKER HUB
+docker pull ramses2099/serviceapi:latest
+
+DOCKER LOGS
+docker logs -f [CONTAINER ID]
+
+DOCKER BATCH
+docker inspect [CONTAINER ID]
+
+docker exec -it [CONTAINER ID] /bin/sh
